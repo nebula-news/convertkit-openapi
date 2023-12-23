@@ -1,0 +1,2047 @@
+openapi: 3.0.3
+info:
+  title: ConvertKit API
+  version: 3.0.0
+servers:
+  - url: https://api.convertkit.com
+paths:
+  /v3/account:
+    get:
+      summary: Show the current account
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: The name of the account
+                  primary_email_address:
+                    type: string
+                    description: The primary email address associated with the account
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/forms:
+    get:
+      summary: List forms
+      parameters:
+        - name: api_key
+          in: query
+          required: true
+          description: Your account API key
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  forms:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the form
+                        name:
+                          type: string
+                          description: The name of the form
+                        created_at:
+                          type: string
+                          description: The creation date of the form
+                        type:
+                          type: string
+                          description: The type of the form
+                        url:
+                          type: string
+                          description: The URL of the form
+                        embed_js:
+                          type: string
+                          description: The JavaScript embed code of the form
+                        embed_url:
+                          type: string
+                          description: The URL of the embedded form
+                        title:
+                          type: string
+                          description: The title of the form
+                        description:
+                          type: string
+                          description: The description of the form
+                        sign_up_button_text:
+                          type: string
+                          description: The text of the sign-up button
+                        success_message:
+                          type: string
+                          description: The success message displayed after form submission
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+    post:
+      summary: Add subscriber to a form
+      parameters:
+        - name: form_id
+          in: path
+          required: true
+          description: The ID of the form
+          schema:
+            type: integer
+        - name: api_key
+          in: query
+          required: true
+          description: Your account API key
+          schema:
+            type: string
+        - name: email
+          in: query
+          required: true
+          description: Subscriber email address
+          schema:
+            type: string
+        - name: first_name
+          in: query
+          required: false
+          description: Subscriber first name
+          schema:
+            type: string
+        - name: fields
+          in: query
+          required: false
+          description: Object of key/value pairs for custom field(s)
+          schema:
+            type: object
+        - name: tags
+          in: query
+          required: false
+          description: Array of tag ids to subscribe to
+          schema:
+            type: array
+            items:
+              type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscription:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the subscription
+                      state:
+                        type: string
+                        description: The state of the subscription
+                      created_at:
+                        type: string
+                        description: The creation date of the subscription
+                      source:
+                        type: string
+                        description: The source of the subscription
+                      referrer:
+                        type: string
+                        description: The referrer of the subscription
+                      subscribable_id:
+                        type: integer
+                        description: The ID of the subscribable entity
+                      subscribable_type:
+                        type: string
+                        description: The type of the subscribable entity
+                      subscriber:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the subscriber
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/forms/{form_id}/subscriptions:
+    get:
+      summary: List subscriptions to a form
+      parameters:
+        - name: form_id
+          in: path
+          required: true
+          description: The ID of the form
+          schema:
+            type: integer
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: sort_order
+          in: query
+          required: false
+          description: Sort order (asc or desc)
+          schema:
+            type: string
+        - name: subscriber_state
+          in: query
+          required: false
+          description: Subscriber state (active or cancelled)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page of results being requested
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_subscriptions:
+                    type: integer
+                    description: The total number of subscriptions
+                  page:
+                    type: integer
+                    description: The current page number
+                  total_pages:
+                    type: integer
+                    description: The total number of pages
+                  subscriptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the subscription
+                        state:
+                          type: string
+                          description: The state of the subscription
+                        created_at:
+                          type: string
+                          description: The creation date of the subscription
+                        source:
+                          type: string
+                          description: The source of the subscription
+                        referrer:
+                          type: string
+                          description: The referrer of the subscription
+                        subscribable_id:
+                          type: integer
+                          description: The ID of the subscribable entity
+                        subscribable_type:
+                          type: string
+                          description: The type of the subscribable entity
+                        subscriber:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: The ID of the subscriber
+                            first_name:
+                              type: string
+                              description: The first name of the subscriber
+                            email_address:
+                              type: string
+                              description: The email address of the subscriber
+                            state:
+                              type: string
+                              description: The state of the subscriber
+                            created_at:
+                              type: string
+                              description: The creation date of the subscriber
+                            fields:
+                              type: object
+                              description: Custom field(s) of the subscriber
+  /v3/sequences:
+    get:
+      summary: List sequences
+      parameters:
+        - name: api_key
+          in: query
+          required: true
+          description: Your account API key
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courses:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the sequence
+                        name:
+                          type: string
+                          description: The name of the sequence
+                        created_at:
+                          type: string
+                          description: The creation date of the sequence
+    post:
+      summary: Add subscriber to a sequence
+      parameters:
+        - name: sequence_id
+          in: path
+          required: true
+          description: The ID of the sequence
+          schema:
+            type: integer
+        - name: api_key
+          in: query
+          required: true
+          description: Your account API key
+          schema:
+            type: string
+        - name: email
+          in: query
+          required: true
+          description: Subscriber email address
+          schema:
+            type: string
+        - name: first_name
+          in: query
+          required: false
+          description: Subscriber first name
+          schema:
+            type: string
+        - name: fields
+          in: query
+          required: false
+          description: Object of key/value pairs for custom field(s)
+          schema:
+            type: object
+        - name: tags
+          in: query
+          required: false
+          description: Array of tag ids to subscribe to
+          schema:
+            type: array
+            items:
+              type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscription:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the subscription
+                      state:
+                        type: string
+                        description: The state of the subscription
+                      created_at:
+                        type: string
+                        description: The creation date of the subscription
+                      source:
+                        type: string
+                        description: The source of the subscription
+                      referrer:
+                        type: string
+                        description: The referrer of the subscription
+                      subscribable_id:
+                        type: integer
+                        description: The ID of the subscribable entity
+                      subscribable_type:
+                        type: string
+                        description: The type of the subscribable entity
+                      subscriber:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the subscriber
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/sequences/{sequence_id}/subscriptions:
+    get:
+      summary: List subscriptions to a sequence
+      parameters:
+        - name: sequence_id
+          in: path
+          required: true
+          description: The ID of the sequence
+          schema:
+            type: integer
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: sort_order
+          in: query
+          required: false
+          description: Sort order (asc or desc)
+          schema:
+            type: string
+        - name: subscriber_state
+          in: query
+          required: false
+          description: Subscriber state (active or cancelled)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page of results being requested
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_subscriptions:
+                    type: integer
+                    description: The total number of subscriptions
+                  page:
+                    type: integer
+                    description: The current page number
+                  total_pages:
+                    type: integer
+                    description: The total number of pages
+                  subscriptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the subscription
+                        state:
+                          type: string
+                          description: The state of the subscription
+                        created_at:
+                          type: string
+                          description: The creation date of the subscription
+                        source:
+                          type: string
+                          description: The source of the subscription
+                        referrer:
+                          type: string
+                          description: The referrer of the subscription
+                        subscribable_id:
+                          type: integer
+                          description: The ID of the subscribable entity
+                        subscribable_type:
+                          type: string
+                          description: The type of the subscribable entity
+                        subscriber:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: The ID of the subscriber
+                            first_name:
+                              type: string
+                              description: The first name of the subscriber
+                            email_address:
+                              type: string
+                              description: The email address of the subscriber
+                            state:
+                              type: string
+                              description: The state of the subscriber
+                            created_at:
+                              type: string
+                              description: The creation date of the subscriber
+                            fields:
+                              type: object
+                              description: Custom field(s) of the subscriber
+  /v3/tags:
+    get:
+      summary: List tags
+      parameters:
+        - name: api_key
+          in: query
+          required: true
+          description: Your account API key
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the tag
+                        name:
+                          type: string
+                          description: The name of the tag
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The creation date of the tag
+
+    post:
+      summary: Create a tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+                tag:
+                  oneOf:
+                    - type: object
+                      properties:
+                        name:
+                          type: string
+                          description: The name of the tag
+                    - type: array
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: The name of the tag
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      account_id:
+                        type: integer
+                        description: The ID of the account
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: The creation date of the tag
+                      deleted_at:
+                        type: string
+                        format: date-time
+                        nullable: true
+                        description: The deletion date of the tag (null if not deleted)
+                      id:
+                        type: integer
+                        description: The ID of the tag
+                      name:
+                        type: string
+                        description: The name of the tag
+                      state:
+                        type: string
+                        description: The state of the tag
+                      updated_at:
+                        type: string
+                        format: date-time
+                        description: The last update date of the tag
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/Tag"
+  /v3/tags/{tag_id}/subscribe:
+    post:
+      summary: Tag a subscriber
+      parameters:
+        - name: tag_id
+          in: path
+          required: true
+          description: The ID of the tag
+          schema:
+            type: integer
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Subscriber email address
+                first_name:
+                  type: string
+                  description: Subscriber first name
+                fields:
+                  type: object
+                  description: Object of key/value pairs for custom field(s)
+                tags:
+                  type: array
+                  items:
+                    type: integer
+                    description: Array of tag ids to subscribe to
+                courses:
+                  type: array
+                  items:
+                    type: integer
+                    description: Array of sequence ids to subscribe to
+                  deprecated: true
+                forms:
+                  type: array
+                  items:
+                    type: integer
+                    description: Array of form ids to subscribe to
+                  deprecated: true
+                name:
+                  type: string
+                  description: Subscriber first name (deprecated, use first_name instead)
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscription:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the subscription
+                      state:
+                        type: string
+                        description: The state of the subscription
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: The creation date of the subscription
+                      source:
+                        type: string
+                        nullable: true
+                        description: The source of the subscription
+                      referrer:
+                        type: string
+                        nullable: true
+                        description: The referrer of the subscription
+                      subscribable_id:
+                        type: integer
+                        description: The ID of the subscribable
+                      subscribable_type:
+                        type: string
+                        description: The type of the subscribable
+                      subscriber:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: The ID of the subscriber
+  /v3/subscribers/{subscriber_id}/tags/{tag_id}:
+    delete:
+      summary: Remove tag from a subscriber
+      parameters:
+        - name: subscriber_id
+          in: path
+          required: true
+          description: The ID of the subscriber
+          schema:
+            type: integer
+        - name: tag_id
+          in: path
+          required: true
+          description: The ID of the tag
+          schema:
+            type: integer
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the tag
+                  name:
+                    type: string
+                    description: The name of the tag
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The creation date of the tag
+  /v3/tags/{tag_id}/unsubscribe:
+    post:
+      summary: Remove tag from a subscriber by email
+      parameters:
+        - name: tag_id
+          in: path
+          required: true
+          description: The ID of the tag
+          schema:
+            type: integer
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Subscriber email address
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the tag
+                  name:
+                    type: string
+                    description: The name of the tag
+                  created_at:
+                    type: string
+                    format: date-time
+                    description: The creation date of the tag
+  /v3/tags/{tag_id}/subscriptions:
+    get:
+      summary: List subscriptions to a tag
+      parameters:
+        - name: tag_id
+          in: path
+          required: true
+          description: The ID of the tag
+          schema:
+            type: integer
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: sort_order
+          in: query
+          required: false
+          description: asc to list subscribers added oldest to newest, desc to list subscribers added newest to oldest. asc is the default order.
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: subscriber_state
+          in: query
+          required: false
+          description: Receive only active subscribers or cancelled subscribers
+          schema:
+            type: string
+            enum:
+              - active
+              - cancelled
+        - name: page
+          in: query
+          required: false
+          description: The page of results being requested. Default value is 1. Each page of results will contain up to 50 tags.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_subscriptions:
+                    type: integer
+                    description: The total number of subscriptions
+                  page:
+                    type: integer
+                    description: The current page number
+                  total_pages:
+                    type: integer
+                    description: The total number of pages
+                  subscriptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the subscription
+                        state:
+                          type: string
+                          description: The state of the subscription
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The creation date of the subscription
+                        source:
+                          type: string
+                          nullable: true
+                          description: The source of the subscription
+                        referrer:
+                          type: string
+                          nullable: true
+                          description: The referrer of the subscription
+                        subscribable_id:
+                          type: integer
+                          description: The ID of the subscribable
+                        subscribable_type:
+                          type: string
+                          description: The type of the subscribable
+                        subscriber:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: The ID of the subscriber
+                            first_name:
+                              type: string
+                              description: The first name of the subscriber
+                            email_address:
+                              type: string
+                              description: The email address of the subscriber
+                            state:
+                              type: string
+                              description: The state of the subscriber
+                            created_at:
+                              type: string
+                              format: date-time
+                              description: The creation date of the subscriber
+                            fields:
+                              type: object
+                              description: Object of key/value pairs for custom field(s)
+                              additionalProperties:
+                                type: string
+  /v3/subscribers:
+    get:
+      summary: List subscribers
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page of results being requested. Default value is 1.
+          schema:
+            type: integer
+        - name: from
+          in: query
+          required: false
+          description: Filter subscribers added on or after this date (format yyyy-mm-dd)
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: false
+          description: Filter subscribers added on or before this date (format yyyy-mm-dd)
+          schema:
+            type: string
+            format: date
+        - name: updated_from
+          in: query
+          required: false
+          description: Filter subscribers who have been updated after this date (format yyyy-mm-dd)
+          schema:
+            type: string
+            format: date
+        - name: updated_to
+          in: query
+          required: false
+          description: Filter subscribers who have been updated before this date (format yyyy-mm-dd)
+          schema:
+            type: string
+            format: date
+        - name: sort_order
+          in: query
+          required: false
+          description: Sort order for results (asc or desc)
+          schema:
+            type: string
+        - name: sort_field
+          in: query
+          required: false
+          description: Field to sort by (cancelled_at)
+          schema:
+            type: string
+        - name: email_address
+          in: query
+          required: false
+          description: Search subscribers by email address
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_subscribers:
+                    type: integer
+                    description: The total number of subscribers
+                  page:
+                    type: integer
+                    description: The current page of results
+                  total_pages:
+                    type: integer
+                    description: The total number of pages
+                  subscribers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the subscriber
+                        first_name:
+                          type: string
+                          description: The first name of the subscriber
+                        email_address:
+                          type: string
+                          description: The email address of the subscriber
+                        state:
+                          type: string
+                          description: The state of the subscriber
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The creation date of the subscriber
+                        fields:
+                          type: object
+                          description: Custom fields of the subscriber
+    /{subscriber_id}:
+      get:
+        summary: View a single subscriber
+        parameters:
+          - name: api_secret
+            in: query
+            required: true
+            description: Your API secret key
+            schema:
+              type: string
+          - name: subscriber_id
+            in: path
+            required: true
+            description: The ID of the subscriber
+            schema:
+              type: integer
+        responses:
+          "200":
+            description: Successful response
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    subscriber:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the subscriber
+                        first_name:
+                          type: string
+                          description: The first name of the subscriber
+                        email_address:
+                          type: string
+                          description: The email address of the subscriber
+                        state:
+                          type: string
+                          description: The state of the subscriber
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The creation date of the subscriber
+                        fields:
+                          type: object
+                          description: Custom fields of the subscriber
+      put:
+        summary: Update subscriber
+        parameters:
+          - name: api_secret
+            in: query
+            required: true
+            description: Your API secret key
+            schema:
+              type: string
+          - name: subscriber_id
+            in: path
+            required: true
+            description: The ID of the subscriber
+            schema:
+              type: integer
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  first_name:
+                    type: string
+                    description: Updated first name for the subscriber
+                  email_address:
+                    type: string
+                    description: Updated email address for the subscriber
+                  fields:
+                    type: object
+                    description: Updated custom field(s) for the subscriber as object of key/value pairs
+        responses:
+          "200":
+            description: Successful response
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    subscriber:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the subscriber
+                        first_name:
+                          type: string
+                          description: The first name of the subscriber
+                        email_address:
+                          type: string
+                          description: The email address of the subscriber
+                        state:
+                          type: string
+                          description: The state of the subscriber
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The creation date of the subscriber
+                        fields:
+                          type: object
+                          description: Custom fields of the subscriber
+    /v3/unsubscribe:
+    put:
+      summary: Unsubscribe subscriber
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Subscriber email address
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subscriber:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the subscriber
+                      first_name:
+                        type: string
+                        description: The first name of the subscriber
+                      email_address:
+                        type: string
+                        description: The email address of the subscriber
+                      state:
+                        type: string
+                        description: The state of the subscriber
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: The creation date of the subscriber
+                      fields:
+                        type: object
+                        description: Custom fields of the subscriber
+  /v3/subscribers/{subscriber_id}/tags:
+    get:
+      summary: List tags for a subscriber
+      parameters:
+        - name: api_key
+          in: query
+          required: true
+          description: Your account API key
+          schema:
+            type: string
+        - name: subscriber_id
+          in: path
+          required: true
+          description: The ID of the subscriber
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the tag
+                        name:
+                          type: string
+                          description: The name of the tag
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The creation date of the tag
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/broadcasts:
+    get:
+      summary: List broadcasts
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page of results being requested. Default value is 1. Each page of results will contain up to 50 broadcasts.
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  broadcasts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the broadcast
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: The creation date and time of the broadcast
+                        subject:
+                          type: string
+                          description: The subject of the broadcast
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+    post:
+      summary: Create a broadcast
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+                description:
+                  type: string
+                  description: An internal description of the broadcast
+                subject:
+                  type: string
+                  description: The subject of the broadcast
+                content:
+                  type: string
+                  description: The email content of the broadcast
+                email_address:
+                  type: string
+                  description: Sending email address; leave blank to use the account's default sending email address
+                email_layout_template:
+                  type: string
+                  description: Name of the email template to use; leave blank to use the account's default email template
+                public:
+                  type: boolean
+                  description: Specifies whether or not this is a public post
+                published_at:
+                  type: string
+                  format: date-time
+                  description: Specifies the time that this post was published (applicable only to public posts)
+                send_at:
+                  type: string
+                  format: date-time
+                  description: Time that this broadcast should be sent; leave blank to create a draft broadcast. If set to a future time, this is the time that the broadcast will be scheduled to send.
+                thumbnail_alt:
+                  type: string
+                  description: Specify the ALT attribute of the public thumbnail image (applicable only to public posts)
+                thumbnail_url:
+                  type: string
+                  description: Specify the URL of the thumbnail image to accompany the broadcast post (applicable only to public posts)
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  broadcast:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the broadcast
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: The creation date and time of the broadcast
+                      subject:
+                        type: string
+                        description: The subject of the broadcast
+                      description:
+                        type: string
+                        description: An internal description of the broadcast
+                      content:
+                        type: string
+                        description: The email content of the broadcast
+                      public:
+                        type: boolean
+                        description: Specifies whether or not this is a public post
+                      published_at:
+                        type: string
+                        format: date-time
+                        description: Specifies the time that this post was published (applicable only to public posts)
+                      send_at:
+                        type: string
+                        format: date-time
+                        description: Time that this broadcast should be sent
+                      thumbnail_alt:
+                        type: string
+                        description: Specify the ALT attribute of the public thumbnail image (applicable only to public posts)
+                      thumbnail_url:
+                        type: string
+                        description: Specify the URL of the thumbnail image to accompany the broadcast post (applicable only to public posts)
+                      email_address:
+                        type: string
+                        description: Sending email address
+                      email_layout_template:
+                        type: string
+                        description: Name of the email template used
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/broadcasts/{broadcast_id}:
+    get:
+      summary: Retrieve a specific broadcast
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: broadcast_id
+          in: path
+          required: true
+          description: The ID of the broadcast you want to retrieve
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  broadcast:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the broadcast
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: The creation date and time of the broadcast
+                      subject:
+                        type: string
+                        description: The subject of the broadcast
+                      description:
+                        type: string
+                        description: An internal description of the broadcast
+                      content:
+                        type: string
+                        description: The email content of the broadcast
+                      public:
+                        type: boolean
+                        description: Specifies whether or not this is a public post
+                      published_at:
+                        type: string
+                        format: date-time
+                        description: Specifies the time that this post was published (applicable only to public posts)
+                      send_at:
+                        type: string
+                        format: date-time
+                        description: Time that this broadcast should be sent
+                      thumbnail_alt:
+                        type: string
+                        description: Specify the ALT attribute of the public thumbnail image (applicable only to public posts)
+                      thumbnail_url:
+                        type: string
+                        description: Specify the URL of the thumbnail image to accompany the broadcast post (applicable only to public posts)
+                      email_address:
+                        type: string
+                        description: Sending email address
+                      email_layout_template:
+                        type: string
+                        description: Name of the email template used
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+
+    put:
+      summary: Update a broadcast
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: broadcast_id
+          in: path
+          required: true
+          description: The ID of the broadcast you want to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+                content:
+                  type: string
+                  description: The broadcast's email HTML content
+                description:
+                  type: string
+                  description: An internal description of the broadcast
+                email_address:
+                  type: string
+                  description: Sending email address; leave blank to use the account's default sending email address
+                email_layout_template:
+                  type: string
+                  description: Name of the email template to use; leave blank to use the account's default email template
+                public:
+                  type: boolean
+                  description: Specifies whether or not this is a public post
+                published_at:
+                  type: string
+                  format: date-time
+                  description: Specifies the time that this post was published (applicable only to public posts)
+                send_at:
+                  type: string
+                  format: date-time
+                  description: Time that this broadcast should be sent; leave blank to create a "draft" broadcast. If set to a future time, this is the time that the broadcast will be scheduled to send.
+                subject:
+                  type: string
+                  description: The broadcast's email subject
+                thumbnail_alt:
+                  type: string
+                  description: Specify the ALT attribute of the public thumbnail image (applicable only to public posts)
+                thumbnail_url:
+                  type: string
+                  description: Specify the URL of the thumbnail image to accompany the broadcast post (applicable only to public posts)
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  broadcast:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the broadcast
+                      created_at:
+                        type: string
+                        format: date-time
+                        description: The creation date and time of the broadcast
+                      subject:
+                        type: string
+                        description: The subject of the broadcast
+                      description:
+                        type: string
+                        description: An internal description of the broadcast
+                      content:
+                        type: string
+                        description: The email content of the broadcast
+                      public:
+                        type: boolean
+                        description: Specifies whether or not this is a public post
+                      published_at:
+                        type: string
+                        format: date-time
+                        description: Specifies the time that this post was published (applicable only to public posts)
+                      send_at:
+                        type: string
+                        format: date-time
+                        description: Time that this broadcast should be sent
+                      thumbnail_alt:
+                        type: string
+                        description: Specify the ALT attribute of the public thumbnail image (applicable only to public posts)
+                      thumbnail_url:
+                        type: string
+                        description: Specify the URL of the thumbnail image to accompany the broadcast post (applicable only to public posts)
+                      email_address:
+                        type: string
+                        description: Sending email address
+                      email_layout_template:
+                        type: string
+                        description: Name of the email template used
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+
+    delete:
+      summary: Destroy a broadcast
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: broadcast_id
+          in: path
+          required: true
+          description: The ID of the broadcast you want to destroy
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: No content
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/broadcasts/{broadcast_id}/stats:
+    get:
+      summary: Get stats
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+        - name: broadcast_id
+          in: path
+          required: true
+          description: The ID of the broadcast you want to retrieve stats for
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  broadcast:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the broadcast
+                        stats:
+                          type: object
+                          properties:
+                            recipients:
+                              type: integer
+                              description: The number of recipients
+                            open_rate:
+                              type: number
+                              description: The open rate percentage
+                            click_rate:
+                              type: number
+                              description: The click rate percentage
+                            unsubscribes:
+                              type: integer
+                              description: The number of unsubscribes
+                            total_clicks:
+                              type: integer
+                              description: The total number of clicks
+                            show_total_clicks:
+                              type: boolean
+                              description: Specifies whether or not to show the total number of clicks
+                            status:
+                              type: string
+                              description: The status of the broadcast
+                            progress:
+                              type: number
+                              description: The progress of the broadcast
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/automations/hooks:
+    post:
+      summary: Create a webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+                target_url:
+                  type: string
+                  description: The URL that will receive subscriber data when the event is triggered
+                event:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: The name of the event
+                    sequence_id:
+                      type: integer
+                      description: The ID of the sequence (if applicable)
+                    form_id:
+                      type: integer
+                      description: The ID of the form (if applicable)
+                    tag_id:
+                      type: integer
+                      description: The ID of the tag (if applicable)
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rule:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: The ID of the rule
+                      account_id:
+                        type: integer
+                        description: The ID of the account
+                      event:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: The name of the event
+                          sequence_id:
+                            type: integer
+                            description: The ID of the sequence (if applicable)
+                          form_id:
+                            type: integer
+                            description: The ID of the form (if applicable)
+                          tag_id:
+                            type: integer
+                            description: The ID of the tag (if applicable)
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+    delete:
+      summary: Destroy webhook
+      parameters:
+        - name: rule_id
+          in: path
+          required: true
+          description: The ID of the webhook rule
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates if the deletion was successful
+        "401":
+          description: Unauthorized
+  /v3/custom_fields:
+    get:
+      summary: List fields
+      parameters:
+        - name: api_key
+          in: query
+          required: true
+          description: Your account API key
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  custom_fields:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the custom field
+                        name:
+                          type: string
+                          description: The name of the custom field
+                        key:
+                          type: string
+                          description: The key of the custom field
+                        label:
+                          type: string
+                          description: The label of the custom field
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+    post:
+      summary: Create field
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+                label:
+                  type: string
+                  description: The label(s) of the custom field
+              required:
+                - api_secret
+                - label
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the custom field
+                  name:
+                    type: string
+                    description: The name of the custom field
+                  key:
+                    type: string
+                    description: The key of the custom field
+                  label:
+                    type: string
+                    description: The label of the custom field
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/custom_fields/{custom_field_id}:
+    put:
+      summary: Update field
+      parameters:
+        - name: custom_field_id
+          in: path
+          required: true
+          description: The ID of the custom field
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+                label:
+                  type: string
+                  description: The label of the custom field
+              required:
+                - api_secret
+                - label
+      responses:
+        "204":
+          description: No content
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+    delete:
+      summary: Destroy field
+      parameters:
+        - name: custom_field_id
+          in: path
+          required: true
+          description: The ID of the custom field
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+              required:
+                - api_secret
+      responses:
+        "204":
+          description: No content
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal server error
+  /v3/purchases:
+    get:
+      summary: List purchases
+      parameters:
+        - name: api_secret
+          in: query
+          required: true
+          description: Your API secret key
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_purchases:
+                    type: integer
+                    description: The total number of purchases
+                  page:
+                    type: integer
+                    description: The current page number
+                  total_pages:
+                    type: integer
+                    description: The total number of pages
+                  purchases:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: The ID of the purchase
+                        transaction_id:
+                          type: string
+                          description: The transaction ID of the purchase
+                        status:
+                          type: string
+                          description: The status of the purchase
+                        email_address:
+                          type: string
+                          description: The email address associated with the purchase
+                        currency:
+                          type: string
+                          description: The currency of the purchase
+                        transaction_time:
+                          type: string
+                          description: The transaction time of the purchase
+                        subtotal:
+                          type: number
+                          description: The subtotal of the purchase
+                        shipping:
+                          type: number
+                          description: The shipping cost of the purchase
+                        discount:
+                          type: number
+                          description: The discount applied to the purchase
+                        tax:
+                          type: number
+                          description: The tax applied to the purchase
+                        total:
+                          type: number
+                          description: The total cost of the purchase
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              unit_price:
+                                type: number
+                                description: The unit price of the product
+                              quantity:
+                                type: integer
+                                description: The quantity of the product
+                              sku:
+                                type: string
+                                description: The SKU of the product
+                              name:
+                                type: string
+                                description: The name of the product
+        "401":
+          description: Unauthorized
+    post:
+      summary: Create a purchase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                api_secret:
+                  type: string
+                  description: Your API secret key
+                purchase:
+                  type: object
+                  properties:
+                    transaction_id:
+                      type: string
+                      description: A unique ID for the purchase
+                    email_address:
+                      type: string
+                      description: The email address of the subscriber
+                    first_name:
+                      type: string
+                      description: The first name of the subscriber
+                    currency:
+                      type: string
+                      description: The currency code (e.g. USD)
+                    transaction_time:
+                      type: string
+                      description: The transaction time as an ISO string
+                    subtotal:
+                      type: number
+                      description: The subtotal of the purchase
+                    tax:
+                      type: number
+                      description: The tax applied to the purchase
+                    shipping:
+                      type: number
+                      description: The shipping cost of the purchase
+                    discount:
+                      type: number
+                      description: The discount applied to the purchase
+                    total:
+                      type: number
+                      description: The total cost of the purchase
+                    status:
+                      type: string
+                      description: The status of the purchase
+                    products:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          pid:
+                            type: integer
+                            description: The product ID
+                          lid:
+                            type: integer
+                            description: The line item identifier
+                          name:
+                            type: string
+                            description: The name of the product
+                          sku:
+                            type: string
+                            description: The SKU of the product
+                          unit_price:
+                            type: number
+                            description: The unit price of the product
+                          quantity:
+                            type: integer
+                            description: The quantity of the product
+              required:
+                - api_secret
+                - purchase
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: The ID of the purchase
+                  transaction_id:
+                    type: string
+                    description: The transaction ID of the purchase
+                  status:
+                    type: string
+                    description: The status of the purchase
+                  email_address:
+                    type: string
+                    description: The email address associated with the purchase
+                  currency:
+                    type: string
+                    description: The currency of the purchase
+                  transaction_time:
+                    type: string
+                    description: The transaction time of the purchase
+                  subtotal:
+                    type: number
+                    description: The subtotal of the purchase
+                  shipping:
+                    type: number
+                    description: The shipping cost of the purchase
+                  discount:
+                    type: number
+                    description: The discount applied to the purchase
+                  tax:
+                    type: number
+                    description: The tax applied to the purchase
+                  total:
+                    type: number
+                    description: The total cost of the purchase
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        unit_price:
+                          type: number
+                          description: The unit price of the product
+                        quantity:
+                          type: integer
+                          description: The quantity of the product
+                        sku:
+                          type: string
+                          description: The SKU of the product
+                        name:
+                          type: string
+                          description: The name of the product
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
